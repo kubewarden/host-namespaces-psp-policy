@@ -1,0 +1,16 @@
+name: psp-host-namespaces
+description: A Pod Security Policy that controls the usage of host namespaces
+homepage: https://github.com/kubewarden/psp-host-namespaces
+author:
+  name: Kubewarden devs
+  homepage: https://github.com/kubewarden
+download:
+  registry: ghcr.io/kubewarden/policies/psp-host-namespaces:__TAG__
+  url: https://github.com/kubewarden/psp-host-namespaces/releases/download/__TAG__/policy.wasm
+keywords:
+  - PSP
+  - Container
+  - Network
+resources:
+  - Pod
+mutation: false
