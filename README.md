@@ -1,20 +1,34 @@
-Please, note well: this file and the scaffold were generated from [a
-template](https://github.com/kubewarden/policy-rust-template). Make
-this project yours!
-
 # Kubewarden policy psp-host-namespaces
 
 ## Description
 
-This policy will reject pods that have a name `invalid-pod-name`. If
-the pod to be validated has a different name, or if a different type
-of resource is evaluated, it will be accepted.
+Replacement for the Kubernetes Pod Security Policy that controls the
+usage of host namespaces
 
 ## Settings
 
-This policy has no configurable settings. This would be a good place
-to document if yours does, and what behaviors can be configured by
-tweaking them.
+This policy works by defining what host namespaces can be used by a Pod.
+
+The following setting keys are accepted for this policy:
+
+* `allow_host_ipc`: allows the pod to set `.spec.HostIPC` to true.
+* `allow_host_network`: allows the pod to set `.spec.HostNetwork` to true.
+* `allow_host_pid`: allows the pod to set `.spec.HostPID` to true.
+* `allow_host_ports`: is a range of ports of the form:
+
+  ```json
+  allow_host_ports:
+    - min: 80
+      max: 80
+    - min: 443
+      max: 443
+    - min: 8000
+      max: 9000
+  ```
+
+  This example would allow host ports `80`, `443` and the range `8000-9000`.
+
+The policy validates Pods at creation time.
 
 ## License
 
