@@ -1,0 +1,36 @@
+rules:
+- apiGroups: [""]
+  apiVersions: ["v1"]
+  resources: ["pods"]
+  operations: ["CREATE"]
+mutating: false
+annotations:
+  io.kubewarden.policy.title: psp-host-namespaces
+  io.kubewarden.policy.description: Replacement for the Kubernetes Pod Security Policy that controls the usage of host namespaces
+  io.kubewarden.policy.author: Rafael Fernández López
+  io.kubewarden.policy.url: https://github.com/kubewarden/psp-host-namespaces
+  io.kubewarden.policy.source: https://github.com/kubewarden/psp-host-namespaces
+  io.kubewarden.policy.license: Apache-2.0
+  io.kubewarden.policy.usage: |
+    This policy works by defining what host namespaces can be used by a Pod.
+
+    The following setting keys are accepted for this policy:
+
+    * `allow_host_ipc`: allows the pod to set `.spec.HostIPC` to true.
+    * `allow_host_network`: allows the pod to set `.spec.HostNetwork` to true.
+    * `allow_host_pid`: allows the pod to set `.spec.HostPID` to true.
+    * `allow_host_ports`: is a range of ports of the form:
+
+      ```json
+      allow_host_ports:
+        - min: 80
+          max: 80
+        - min: 443
+          max: 443
+        - min: 8000
+          max: 9000
+      ```
+
+      This example would allow host ports `80`, `443` and the range `8000-9000`.
+
+    The policy validates Pods at creation time.
