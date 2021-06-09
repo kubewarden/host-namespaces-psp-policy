@@ -25,6 +25,7 @@ impl PortRange {
 }
 
 #[derive(Serialize, Deserialize, Default, Debug)]
+#[serde(default)]
 pub(crate) struct Settings {
     pub allow_host_ipc: bool,
     pub allow_host_network: bool,

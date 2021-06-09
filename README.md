@@ -28,6 +28,12 @@ The following setting keys are accepted for this policy:
 
   This example would allow host ports `80`, `443` and the range `8000-9000`.
 
+`allow_host_ipc`, `allow_host_network` and `allow_host_pid` are
+`false` by default. `allow_host_ports` is an empty list by
+default. This means that by default host IPC, network, pid and all
+host ports are disabled when this policy is loaded with no
+configuration.
+
 The policy validates Pods at creation time.
 
 ## License
