@@ -29,30 +29,21 @@ fn validate(payload: &[u8]) -> CallResult {
 
     if pod_spec.host_ipc.unwrap_or(false) && !settings.allow_host_ipc {
         return kubewarden::reject_request(
-            Some(format!(
-                "Pod {:?} has IPC enabled, but this is not allowed",
-                pod.metadata
-            )),
+            Some("Pod has IPC enabled, but this is not allowed".to_string()),
             None,
         );
     }
 
     if pod_spec.host_network.unwrap_or(false) && !settings.allow_host_network {
         return kubewarden::reject_request(
-            Some(format!(
-                "Pod {:?} has host network enabled, but this is not allowed",
-                pod.metadata
-            )),
+            Some("Pod has host network enabled, but this is not allowed".to_string()),
             None,
         );
     }
 
     if pod_spec.host_pid.unwrap_or(false) && !settings.allow_host_pid {
         return kubewarden::reject_request(
-            Some(format!(
-                "Pod {:?} has host PID enabled, but this is not allowed",
-                pod.metadata
-            )),
+            Some("Pod has host PID enabled, but this is not allowed".to_string()),
             None,
         );
     }
@@ -62,20 +53,14 @@ fn validate(payload: &[u8]) -> CallResult {
         &settings.allow_host_ports,
     ) {
         return kubewarden::reject_request(
-            Some(format!(
-                "Pod {:?} is using unallowed host ports in init containers",
-                pod.metadata
-            )),
+            Some("Pod is using unallowed host ports in init containers".to_string()),
             None,
         );
     }
 
     if !all_containers_allowed(&pod_spec.containers, &settings.allow_host_ports) {
         return kubewarden::reject_request(
-            Some(format!(
-                "Pod {:?} is using unallowed host ports in containers",
-                pod.metadata
-            )),
+            Some("Pod is using unallowed host ports in containers".to_string()),
             None,
         );
     }
