@@ -16,7 +16,7 @@ The following setting keys are accepted for this policy:
 * `allow_host_pid`: allows the pod to set `.spec.HostPID` to true.
 * `allow_host_ports`: is a range of ports of the form:
 
-  ```json
+  ```yaml
   allow_host_ports:
     - min: 80
       max: 80
