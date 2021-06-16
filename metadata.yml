@@ -4,6 +4,7 @@ rules:
   resources: ["pods"]
   operations: ["CREATE"]
 mutating: false
+contextAware: false
 annotations:
   io.kubewarden.policy.title: psp-host-namespaces
   io.kubewarden.policy.description: Replacement for the Kubernetes Pod Security Policy that controls the usage of host namespaces
