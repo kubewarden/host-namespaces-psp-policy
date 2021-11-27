@@ -9,8 +9,8 @@ annotations:
   io.kubewarden.policy.title: psp-host-namespaces
   io.kubewarden.policy.description: Replacement for the Kubernetes Pod Security Policy that controls the usage of host namespaces
   io.kubewarden.policy.author: Rafael Fernández López
-  io.kubewarden.policy.url: https://github.com/kubewarden/psp-host-namespaces
-  io.kubewarden.policy.source: https://github.com/kubewarden/psp-host-namespaces
+  io.kubewarden.policy.url: https://github.com/kubewarden/host-namespaces-psp-policy
+  io.kubewarden.policy.source: https://github.com/kubewarden/host-namespaces-psp-policy
   io.kubewarden.policy.license: Apache-2.0
   io.kubewarden.policy.usage: |
     This policy works by defining what host namespaces can be used by a Pod.
