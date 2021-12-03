@@ -57,6 +57,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "host-namespaces-psp"
+version = "0.1.1"
+dependencies = [
+ "anyhow",
+ "k8s-openapi",
+ "kubewarden-policy-sdk",
+ "serde",
+ "serde_json",
+ "wapc-guest",
+]
+
+[[package]]
 name = "http"
 version = "0.2.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -244,18 +256,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f0d8caf72986c1a598726adc988bb5984792ef84f5ee5aa50209145ee8077038"
 dependencies = [
  "unicode-xid",
-]
-
-[[package]]
-name = "psp-host-namespaces"
-version = "0.0.9"
-dependencies = [
- "anyhow",
- "k8s-openapi",
- "kubewarden-policy-sdk",
- "serde",
- "serde_json",
- "wapc-guest",
 ]
 
 [[package]]

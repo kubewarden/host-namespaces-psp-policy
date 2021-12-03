@@ -27,8 +27,8 @@ jobs:
     runs-on: ubuntu-latest
     needs: test
     env:
-      WASM_BINARY_NAME: psp_host_namespaces
-      OCI_TARGET: ghcr.io/kubewarden/policies/psp-host-namespaces
+      WASM_BINARY_NAME: host_namespaces_psp
+      OCI_TARGET: ghcr.io/kubewarden/policies/host-namespaces-psp
       METADATA_FILE: metadata.yml
       KWCTL_VERSION: v0.1.9
     steps:
