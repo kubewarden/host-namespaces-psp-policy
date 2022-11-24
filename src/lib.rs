@@ -1,10 +1,10 @@
-extern crate wapc_guest as guest;
-use guest::prelude::*;
-
-use k8s_openapi::api::core::v1 as apicore;
-
 extern crate kubewarden_policy_sdk as kubewarden;
 use kubewarden::{protocol_version_guest, request::ValidationRequest, validate_settings};
+
+use guest::prelude::*;
+use kubewarden::wapc_guest as guest;
+
+use k8s_openapi::api::core::v1 as apicore;
 
 mod settings;
 use settings::Settings;
@@ -31,6 +31,8 @@ fn validate(payload: &[u8]) -> CallResult {
         return kubewarden::reject_request(
             Some("Pod has IPC enabled, but this is not allowed".to_string()),
             None,
+            None,
+            None,
         );
     }
 
@@ -38,12 +40,16 @@ fn validate(payload: &[u8]) -> CallResult {
         return kubewarden::reject_request(
             Some("Pod has host network enabled, but this is not allowed".to_string()),
             None,
+            None,
+            None,
         );
     }
 
     if pod_spec.host_pid.unwrap_or(false) && !settings.allow_host_pid {
         return kubewarden::reject_request(
             Some("Pod has host PID enabled, but this is not allowed".to_string()),
+            None,
+            None,
             None,
         );
     }
@@ -55,12 +61,16 @@ fn validate(payload: &[u8]) -> CallResult {
         return kubewarden::reject_request(
             Some("Pod is using unallowed host ports in init containers".to_string()),
             None,
+            None,
+            None,
         );
     }
 
     if !all_containers_allowed(&pod_spec.containers, &settings.allow_host_ports) {
         return kubewarden::reject_request(
             Some("Pod is using unallowed host ports in containers".to_string()),
+            None,
+            None,
             None,
         );
     }

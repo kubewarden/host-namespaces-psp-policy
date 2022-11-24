@@ -79,7 +79,6 @@ dependencies = [
  "kubewarden-policy-sdk",
  "serde",
  "serde_json",
- "wapc-guest 0.4.0",
 ]
 
 [[package]]
@@ -168,14 +167,8 @@ dependencies = [
  "serde_yaml",
  "slog",
  "url",
- "wapc-guest 1.0.0",
+ "wapc-guest",
 ]
-
-[[package]]
-name = "lazy_static"
-version = "1.4.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e2abad23fbc42b3700f2f279844dc832adb2b2eb069b2df918f455c4e18cc646"
 
 [[package]]
 name = "libc"
@@ -502,15 +495,6 @@ dependencies = [
  "idna",
  "percent-encoding",
  "serde",
-]
-
-[[package]]
-name = "wapc-guest"
-version = "0.4.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "47cbd9d778b9718eda797278936f93f25ce81064fe26f0bb6a710cd51315f00b"
-dependencies = [
- "lazy_static",
 ]
 
 [[package]]
