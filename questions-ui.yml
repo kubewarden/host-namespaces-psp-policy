@@ -40,18 +40,18 @@ questions:
   group: Settings
   label: Allow host ports
   hide_input: true
-  type: map[
+  type: sequence[
   variable: allow_host_ports
-  subquestions:
+  sequence_questions:
     - default: 0
       tooltip: ''
       group: Settings
       label: min
       type: int
-      variable: allow_host_ports.min
+      variable: min
     - default: 0
       tooltip: ''
       group: Settings
       label: max
       type: int
-      variable: allow_host_ports.max
+      variable: max
