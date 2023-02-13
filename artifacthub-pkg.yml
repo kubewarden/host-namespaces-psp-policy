@@ -2,7 +2,7 @@
 version: 0.1.4
 name: host-namespaces-psp
 displayName: Host Namespaces PSP
-createdAt: '2023-01-19T14:46:21+02:00'
+createdAt: '2023-02-13T15:56:34+00:00'
 description: A Pod Security Policy that controls the usage of host namespaces
 license: Apache-2.0
 homeURL: https://github.com/kubewarden/host-namespaces-psp-policy
