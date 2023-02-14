@@ -1,21 +1,21 @@
 ---
-version: 0.1.3
+version: 0.1.4
 name: host-namespaces-psp
 displayName: Host Namespaces PSP
-createdAt: '2023-01-19T14:46:21+02:00'
+createdAt: '2023-02-13T15:56:34+00:00'
 description: A Pod Security Policy that controls the usage of host namespaces
 license: Apache-2.0
 homeURL: https://github.com/kubewarden/host-namespaces-psp-policy
 containersImages:
 - name: policy
-  image: ghcr.io/kubewarden/policies/host-namespaces-psp:v0.1.3
+  image: ghcr.io/kubewarden/policies/host-namespaces-psp:v0.1.4
 keywords:
 - psp
 - container
 - network
 links:
 - name: policy
-  url: https://github.com/kubewarden/host-namespaces-psp-policy/releases/download/v0.1.3/policy.wasm
+  url: https://github.com/kubewarden/host-namespaces-psp-policy/releases/download/v0.1.4/policy.wasm
 - name: source
   url: https://github.com/kubewarden/host-namespaces-psp-policy
 provider:
@@ -75,18 +75,18 @@ annotations:
       group: Settings
       label: Allow host ports
       hide_input: true
-      type: map[
+      type: sequence[
       variable: allow_host_ports
-      subquestions:
+      sequence_questions:
         - default: 0
           tooltip: ''
           group: Settings
           label: min
           type: int
-          variable: allow_host_ports.min
+          variable: min
         - default: 0
           tooltip: ''
           group: Settings
           label: max
           type: int
-          variable: allow_host_ports.max
+          variable: max
