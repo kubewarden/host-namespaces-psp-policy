@@ -56,12 +56,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "5443807d6dff69373d433ab9ef5378ad8df50ca6298caf15de6e52e24aaf54d5"
 
 [[package]]
-name = "fnv"
-version = "1.0.7"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3f9eec918d3f24069decb9af1554cad7c880e2da24a9afd88aca000531ab82c1"
-
-[[package]]
 name = "form_urlencoded"
 version = "1.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -85,17 +79,6 @@ dependencies = [
  "kubewarden-policy-sdk",
  "serde",
  "serde_json",
-]
-
-[[package]]
-name = "http"
-version = "0.2.4"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "527e8c9ac747e28542699a951517aa9a6945af506cd1f2e1b53a576c17b6cc11"
-dependencies = [
- "bytes",
- "fnv",
- "itoa 0.4.7",
 ]
 
 [[package]]
@@ -132,19 +115,16 @@ checksum = "4217ad341ebadf8d8e724e264f13e593e0648f5b3e94b3896a5df283be015ecc"
 
 [[package]]
 name = "k8s-openapi"
-version = "0.19.0"
+version = "0.20.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "95578de7d6eac4fba42114bc751e38c59a739968769df1be56feba6f17fd148e"
+checksum = "edc3606fd16aca7989db2f84bb25684d0270c6d6fa1dbcd0025af7b4130523a6"
 dependencies = [
  "base64",
  "bytes",
  "chrono",
- "http",
- "percent-encoding",
  "serde",
  "serde-value",
  "serde_json",
- "url",
 ]
 
 [[package]]
