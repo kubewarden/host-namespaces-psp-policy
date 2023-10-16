@@ -7,7 +7,7 @@
 version: 0.1.6
 name: host-namespaces-psp
 displayName: Host Namespaces PSP
-createdAt: 2023-07-07T16:30:27.543864099Z
+createdAt: 2023-10-16T07:47:25.848418557Z
 description: A Kubewarden policy that controls the usage of host namespaces
 license: Apache-2.0
 homeURL: https://github.com/kubewarden/host-namespaces-psp-policy
@@ -27,6 +27,10 @@ install: |
   The policy can be obtained using [`kwctl`](https://github.com/kubewarden/kwctl):
   ```console
   kwctl pull ghcr.io/kubewarden/policies/host-namespaces-psp:v0.1.6
+  ```
+  Then, generate the policy manifest and tune it to your liking. For example:
+  ```console
+  kwctl scaffold manifest -t ClusterAdmissionPolicy registry://ghcr.io/kubewarden/policies/host-namespaces-psp:v0.1.6
   ```
 maintainers:
 - name: Kubewarden developers
