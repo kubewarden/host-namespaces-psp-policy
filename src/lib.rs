@@ -108,7 +108,7 @@ mod tests {
     fn pod_host_ipc() -> Result<()> {
         let request_file = "test_data/pod_host_ipc_enabled.json";
 
-        let tests = vec![
+        let tests = [
             Testcase {
                 name: String::from("Host IPC namespace disallowed"),
                 fixture_file: String::from(request_file),
@@ -140,7 +140,7 @@ mod tests {
     fn pod_host_network() -> Result<()> {
         let request_file = "test_data/pod_host_network_enabled.json";
 
-        let tests = vec![
+        let tests = [
             Testcase {
                 name: String::from("Host network namespace disallowed"),
                 fixture_file: String::from(request_file),
@@ -172,7 +172,7 @@ mod tests {
     fn pod_host_pid() -> Result<()> {
         let request_file = "test_data/pod_host_pid_enabled.json";
 
-        let tests = vec![
+        let tests = [
             Testcase {
                 name: String::from("Host PID namespace disallowed"),
                 fixture_file: String::from(request_file),
@@ -204,7 +204,7 @@ mod tests {
     fn pod_host_port() -> Result<()> {
         let request_file = "test_data/pod_host_ports_443.json";
 
-        let tests = vec![
+        let tests = [
             Testcase {
                 name: String::from("Host port 443 allowed"),
                 fixture_file: String::from(request_file),
