@@ -354,6 +354,7 @@ dependencies = [
  "anyhow",
  "cfg-if",
  "chrono",
+ "k8s-openapi",
  "num",
  "num-derive",
  "num-traits",
