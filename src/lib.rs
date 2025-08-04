@@ -16,17 +16,11 @@ pub extern "C" fn wapc_init() {
     register_function("protocol_version", protocol_version_guest);
 }
 
-fn validate(payload: &[u8]) -> CallResult {
-    let validation_request: ValidationRequest<Settings> = ValidationRequest::new(payload)?;
-
-    let pod = match serde_json::from_value::<apicore::Pod>(validation_request.request.object) {
-        Ok(pod) => pod,
-        Err(_) => return kubewarden::accept_request(),
-    };
-
-    let pod_spec = pod.spec.ok_or("invalid pod spec")?;
-    let settings = validation_request.settings;
-
+fn validate_pod_spec(pod_spec_opt: Option<apicore::PodSpec>, settings: &Settings) -> CallResult {
+    if pod_spec_opt.is_none() {
+        return kubewarden::accept_request();
+    }
+    let pod_spec = pod_spec_opt.unwrap();
     if pod_spec.host_ipc.unwrap_or(false) && !settings.allow_host_ipc {
         return kubewarden::reject_request(
             Some("Pod has IPC enabled, but this is not allowed".to_string()),
@@ -76,6 +70,14 @@ fn validate(payload: &[u8]) -> CallResult {
     }
 
     kubewarden::accept_request()
+}
+
+fn validate(payload: &[u8]) -> CallResult {
+    let validation_request: ValidationRequest<Settings> = ValidationRequest::new(payload)?;
+    match validation_request.extract_pod_spec_from_object() {
+        Ok(pod_spec) => validate_pod_spec(pod_spec, &validation_request.settings),
+        Err(_) => kubewarden::accept_request(),
+    }
 }
 
 fn all_containers_allowed(
