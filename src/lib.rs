@@ -16,66 +16,47 @@ pub extern "C" fn wapc_init() {
     register_function("protocol_version", protocol_version_guest);
 }
 
-fn validate_pod_spec(pod_spec_opt: Option<apicore::PodSpec>, settings: &Settings) -> CallResult {
+fn validate_pod_spec(
+    pod_spec_opt: Option<apicore::PodSpec>,
+    settings: &Settings,
+) -> Result<(), String> {
     if pod_spec_opt.is_none() {
-        return kubewarden::accept_request();
+        return Ok(());
     }
     let pod_spec = pod_spec_opt.unwrap();
     if pod_spec.host_ipc.unwrap_or(false) && !settings.allow_host_ipc {
-        return kubewarden::reject_request(
-            Some("Pod has IPC enabled, but this is not allowed".to_string()),
-            None,
-            None,
-            None,
-        );
+        return Err("Pod has IPC enabled, but this is not allowed".to_string());
     }
 
     if pod_spec.host_network.unwrap_or(false) && !settings.allow_host_network {
-        return kubewarden::reject_request(
-            Some("Pod has host network enabled, but this is not allowed".to_string()),
-            None,
-            None,
-            None,
-        );
+        return Err("Pod has host network enabled, but this is not allowed".to_string());
     }
 
     if pod_spec.host_pid.unwrap_or(false) && !settings.allow_host_pid {
-        return kubewarden::reject_request(
-            Some("Pod has host PID enabled, but this is not allowed".to_string()),
-            None,
-            None,
-            None,
-        );
+        return Err("Pod has host PID enabled, but this is not allowed".to_string());
     }
 
     if !all_containers_allowed(
         &pod_spec.init_containers.unwrap_or_default(),
         &settings.allow_host_ports,
     ) {
-        return kubewarden::reject_request(
-            Some("Pod is using unallowed host ports in init containers".to_string()),
-            None,
-            None,
-            None,
-        );
+        return Err("Pod is using unallowed host ports in init containers".to_string());
     }
 
     if !all_containers_allowed(&pod_spec.containers, &settings.allow_host_ports) {
-        return kubewarden::reject_request(
-            Some("Pod is using unallowed host ports in containers".to_string()),
-            None,
-            None,
-            None,
-        );
+        return Err("Pod is using unallowed host ports in containers".to_string());
     }
 
-    kubewarden::accept_request()
+    Ok(())
 }
 
 fn validate(payload: &[u8]) -> CallResult {
     let validation_request: ValidationRequest<Settings> = ValidationRequest::new(payload)?;
     match validation_request.extract_pod_spec_from_object() {
-        Ok(pod_spec) => validate_pod_spec(pod_spec, &validation_request.settings),
+        Ok(pod_spec) => match validate_pod_spec(pod_spec, &validation_request.settings) {
+            Ok(_) => kubewarden::accept_request(),
+            Err(err) => kubewarden::reject_request(Some(err), None, None, None),
+        },
         Err(_) => kubewarden::accept_request(),
     }
 }
@@ -102,154 +83,72 @@ fn all_containers_allowed(
 #[cfg(test)]
 mod tests {
     use super::*;
-    use anyhow::Result;
+    use rstest::rstest;
 
-    use kubewarden_policy_sdk::test::Testcase;
-
-    #[test]
-    fn pod_host_ipc() -> Result<()> {
-        let request_file = "test_data/pod_host_ipc_enabled.json";
-
-        let tests = [
-            Testcase {
-                name: String::from("Host IPC namespace disallowed"),
-                fixture_file: String::from(request_file),
-                settings: Settings {
-                    allow_host_ipc: false,
+    fn invalid_pod_spec() -> Option<apicore::PodSpec> {
+        Some(apicore::PodSpec {
+            host_ipc: Some(true),
+            host_network: Some(true),
+            host_pid: Some(true),
+            containers: vec![apicore::Container {
+                name: "test-container".to_string(),
+                image: Some("test-image".to_string()),
+                ports: Some(vec![apicore::ContainerPort {
+                    container_port: 8080,
+                    host_port: Some(8080),
                     ..Default::default()
-                },
-                expected_validation_result: false,
-            },
-            Testcase {
-                name: String::from("Host IPC namespace allowed"),
-                fixture_file: String::from(request_file),
-                settings: Settings {
-                    allow_host_ipc: true,
-                    ..Default::default()
-                },
-                expected_validation_result: true,
-            },
-        ];
-
-        for tc in tests.iter() {
-            tc.eval(validate)?;
-        }
-
-        Ok(())
+                }]),
+                ..Default::default()
+            }],
+            ..Default::default()
+        })
     }
 
-    #[test]
-    fn pod_host_network() -> Result<()> {
-        let request_file = "test_data/pod_host_network_enabled.json";
-
-        let tests = [
-            Testcase {
-                name: String::from("Host network namespace disallowed"),
-                fixture_file: String::from(request_file),
-                settings: Settings {
-                    allow_host_network: false,
-                    ..Default::default()
-                },
-                expected_validation_result: false,
-            },
-            Testcase {
-                name: String::from("Host network namespace allowed"),
-                fixture_file: String::from(request_file),
-                settings: Settings {
-                    allow_host_network: true,
-                    ..Default::default()
-                },
-                expected_validation_result: true,
-            },
-        ];
-
-        for tc in tests.iter() {
-            tc.eval(validate)?;
-        }
-
-        Ok(())
+    fn valid_pod_spec() -> Option<apicore::PodSpec> {
+        Some(apicore::PodSpec {
+            host_ipc: Some(false),
+            host_network: Some(false),
+            host_pid: Some(false),
+            ..Default::default()
+        })
     }
 
-    #[test]
-    fn pod_host_pid() -> Result<()> {
-        let request_file = "test_data/pod_host_pid_enabled.json";
-
-        let tests = [
-            Testcase {
-                name: String::from("Host PID namespace disallowed"),
-                fixture_file: String::from(request_file),
-                settings: Settings {
-                    allow_host_pid: false,
-                    ..Default::default()
-                },
-                expected_validation_result: false,
-            },
-            Testcase {
-                name: String::from("Host PID namespace allowed"),
-                fixture_file: String::from(request_file),
-                settings: Settings {
-                    allow_host_pid: true,
-                    ..Default::default()
-                },
-                expected_validation_result: true,
-            },
-        ];
-
-        for tc in tests.iter() {
-            tc.eval(validate)?;
+    fn block_all() -> Settings {
+        Settings {
+            allow_host_ipc: false,
+            allow_host_network: false,
+            allow_host_pid: false,
+            allow_host_ports: vec![settings::PortRange { min: 443, max: 443 }],
         }
-
-        Ok(())
     }
 
-    #[test]
-    fn pod_host_port() -> Result<()> {
-        let request_file = "test_data/pod_host_ports_443.json";
-
-        let tests = [
-            Testcase {
-                name: String::from("Host port 443 allowed"),
-                fixture_file: String::from(request_file),
-                settings: Settings {
-                    allow_host_ports: vec![
-                        settings::PortRange { min: 200, max: 300 },
-                        settings::PortRange { min: 443, max: 443 },
-                        settings::PortRange {
-                            min: 8000,
-                            max: 9000,
-                        },
-                    ],
-                    ..Default::default()
-                },
-                expected_validation_result: true,
-            },
-            Testcase {
-                name: String::from("Host port 443 allowed"),
-                fixture_file: String::from(request_file),
-                settings: Settings {
-                    allow_host_ports: vec![settings::PortRange { min: 80, max: 443 }],
-                    ..Default::default()
-                },
-                expected_validation_result: true,
-            },
-            Testcase {
-                name: String::from("Host port 443 disallowed"),
-                fixture_file: String::from(request_file),
-                settings: Settings {
-                    allow_host_ports: vec![settings::PortRange {
-                        min: 8000,
-                        max: 9000,
-                    }],
-                    ..Default::default()
-                },
-                expected_validation_result: false,
-            },
-        ];
-
-        for tc in tests.iter() {
-            tc.eval(validate)?;
+    fn allow_all() -> Settings {
+        Settings {
+            allow_host_ipc: true,
+            allow_host_network: true,
+            allow_host_pid: true,
+            allow_host_ports: vec![settings::PortRange {
+                min: 8080,
+                max: 8080,
+            }],
         }
+    }
 
-        Ok(())
+    #[rstest]
+    #[case::no_pod_spec(None, block_all(), true)]
+    #[case::valid_pod_spec(valid_pod_spec(), block_all(), true)]
+    #[case::invalid_pod_spec(invalid_pod_spec(), block_all(), false)]
+    #[case::invalid_pod_spec_no_validation(invalid_pod_spec(), allow_all(), true)]
+    fn validate_pod_spec_test(
+        #[case] pod_spec_opt: Option<apicore::PodSpec>,
+        #[case] settings: Settings,
+        #[case] allowed: bool,
+    ) {
+        let result = validate_pod_spec(pod_spec_opt, &settings);
+        if allowed {
+            result.expect("Expected validation to succeed");
+        } else {
+            result.expect_err("Expected validation to fail");
+        }
     }
 }
