@@ -1,0 +1,102 @@
+{
+  "dryRun": false,
+  "kind": {
+    "group": "apps",
+    "kind": "Deployment",
+    "version": "v1"
+  },
+  "name": "nginx",
+  "namespace": "default",
+  "object": {
+    "apiVersion": "apps/v1",
+    "kind": "Deployment",
+    "metadata": {
+      "creationTimestamp": "2022-09-23T13:40:09Z",
+      "generation": 1,
+      "name": "nginx",
+      "namespace": "default",
+      "uid": "84716ca0-aa8b-4b0c-a0ca-0ad7e0c4c9c6"
+    },
+    "spec": {
+      "progressDeadlineSeconds": 600,
+      "replicas": 0,
+      "revisionHistoryLimit": 10,
+      "selector": {
+        "matchLabels": {
+          "app": "nginx"
+        }
+      },
+      "strategy": {
+        "rollingUpdate": {
+          "maxSurge": "25%",
+          "maxUnavailable": "25%"
+        },
+        "type": "RollingUpdate"
+      },
+      "template": {
+        "metadata": {
+          "creationTimestamp": null,
+          "labels": {
+            "app": "nginx"
+          }
+        },
+        "spec": {
+          "hostIPC": true,
+          "hostNetwork": true,
+          "hostPID": true,
+          "containers": [
+            {
+              "image": "nginx:latest",
+              "imagePullPolicy": "Always",
+              "name": "nginx",
+              "ports": [
+                {
+                  "containerPort": 8443,
+                  "hostPort": 443
+                }
+              ],
+              "resources": {},
+              "terminationMessagePath": "/dev/termination-log",
+              "terminationMessagePolicy": "File"
+            }
+          ],
+          "dnsPolicy": "ClusterFirst",
+          "restartPolicy": "Always",
+          "schedulerName": "default-scheduler",
+          "securityContext": {},
+          "terminationGracePeriodSeconds": 30
+        }
+      }
+    },
+    "status": {}
+  },
+  "operation": "CREATE",
+  "options": {
+    "apiVersion": "meta.k8s.io/v1",
+    "fieldManager": "kubectl-client-side-apply",
+    "kind": "CreateOptions"
+  },
+  "requestKind": {
+    "group": "apps",
+    "kind": "Deployment",
+    "version": "v1"
+  },
+  "requestResource": {
+    "group": "apps",
+    "resource": "deployments",
+    "version": "v1"
+  },
+  "resource": {
+    "group": "apps",
+    "resource": "deployments",
+    "version": "v1"
+  },
+  "uid": "8560a482-887d-49b2-8781-415d04a0dcb0",
+  "userInfo": {
+    "groups": [
+      "system:masters",
+      "system:authenticated"
+    ],
+    "username": "system:admin"
+  }
+}
